@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+
+  apache:
+    build: ./apache
+    ports:
+      - "80:80"
+    depends_on:
+      - keycloak
+
+  app:
+    image: httpd:alpine
+    volumes:
+      - ./app:/usr/local/apache2/htdocs/
